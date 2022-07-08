@@ -299,14 +299,13 @@ __double underscores__
 * width와 height 조절가능
 ```
 <img src="https://gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" 
-width="100"
-height="200"/>
+width="200"
+height="100"/>
 ```
 <img src="https://gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" 
-width="100px"
-height="200px"/>
+width="200px"
+height="100px"/>
 
-<br>
 
 ## 8-3. Repository 내에 이미지 사용방법
 
@@ -322,19 +321,19 @@ height="200px"/>
 
 ## 8-4. img 중앙정렬 방법
 
-`<center>`태그를 사용하여 중앙정렬
+`<p align="center">`태그를 사용하여 중앙정렬
 ```
-<center>
+<p align="center">
   <img src="https://gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" 
-    width="300"
-    height="150"/>
-</center>
+    width="500"
+    height="300"/>
+</p>
 ```
 
 <br><br>
 
-<center>
+<p align="center">
   <img src="https://gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" 
-    width="300"
-    height="150"/>
-</center>
+    width="500"
+    height="300"/>
+</p>
