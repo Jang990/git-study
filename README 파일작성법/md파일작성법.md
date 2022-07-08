@@ -281,28 +281,28 @@ __double underscores__
 
 ## 8-1 `![이미지이름](이미지주소)` 사용방법
 ```
-![구글로고](https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_272x92dp.png)
+![구글로고](https://gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg)
 ```
 
-![구글로고](https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_272x92dp.png)
+![구글로고](https://gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg)
 
 <br>
 
 ## 8-2 `<img>` 태그 사용방법
 ```
-<img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_272x92dp.png" />
+<img src="https://gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" />
 ```
-<img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_272x92dp.png" />
+<img src="https://gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" />
 
 <br> 
 
 * width와 height 조절가능
 ```
-<img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_272x92dp.png" 
+<img src="https://gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" 
 width="100"
 height="200"/>
 ```
-<img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_272x92dp.png" 
+<img src="https://gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" 
 width="100px"
 height="200px"/>
 
@@ -325,7 +325,7 @@ height="200px"/>
 `<center>`태그를 사용하여 중앙정렬
 ```
 <center>
-  <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_272x92dp.png" 
+  <img src="https://gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" 
     width="300"
     height="150"/>
 </center>
@@ -334,7 +334,7 @@ height="200px"/>
 <br><br>
 
 <center>
-  <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_272x92dp.png" 
+  <img src="https://gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" 
     width="300"
     height="150"/>
 </center>
