@@ -1,2 +1,2 @@
-# git-study
-깃 공부
+# study-record
+여러 공부 기록
