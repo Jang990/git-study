@@ -238,7 +238,7 @@ public class AppCtx {
 
     @Bean
     public MemberRegisterService memberRegSvc() {
-        return new MemberRegisterService(memberDao);
+        return new MemberRegisterService(memberDao());
     }
 
     @Bean
@@ -358,10 +358,10 @@ public class AppCtx {
 ```
 
 `memberRegSvc()`와 `changePwdSvc()` 둘 다 `memberDao()` 메서드를 실행하고 있다.<br>
-"`memberRegSvc()`와 `changePwdSvc()` 에서 각각 `memberDao()` 메서드로 `new memberDao`를 실행하니 각각 사용하는 `MemberDao`는 서로 다른 것이 아닌가?"라는 궁금증이 생길 수 있다.
+"`memberRegSvc()`와 `changePwdSvc()` 에서 각각 `memberDao()` 메서드로 `new MemberDao()`를 실행하니 각각 사용하는 `MemberDao`는 서로 다른 것이 아닌가?"라는 궁금증이 생길 수 있다.
 
 앞서 chapter2에서 스프링 컨테이너가 생성한 빈은 싱글톤 객체라고 했다.<br>
-스프링 컨테이너는 `@Bean`이 붙은 메서드에 대해 한 개의 객체만 생성한다.<br>
+**스프링 컨테이너는 `@Bean`이 붙은 메서드에 대해 한 개의 객체만 생성한다.**<br>
 이는 다른 설정 메서드에서 `memberDao()`를 몇 번을 호출하더라도 항상 같은 객체를 리턴한다는 것을 의미한다.
 
 스프링은 설정 클래스를 그대로 사용하지 않는다. 대신 설정 클래스를 상속한 새로운 설정 클래스를 만들어서 사용한다.<br>
