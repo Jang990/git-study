@@ -21,6 +21,7 @@ public class Person {
     ...
 }
 
+@Configuration
 public class Chapter3Conf {
 	@Bean
 	public Pet pet() {
@@ -45,6 +46,8 @@ public class Person {
 	private Pet pet;
     ...
 }
+
+@Configuration
 public class Chapter3Conf {
 	@Bean
 	public Pet pet() {
@@ -232,7 +235,7 @@ public Pet pet2() {
 
 | **빈 이름** | **`@qualifies`** | **한정자** |
 |-------------|------------------|------------|
-| pet1|  dog    |  pet1 |
+| pet1|  dog    |  dog |
 | pet2|      |  pet2 |
 
 <br>
@@ -475,7 +478,3 @@ public class Person {
 결과는 자동 주입인 `pet1` 의존이 주입된다.
 
 <br>
-
-기억하자!<br>
-**스프링 컨테이너는 빈을 초기화하기 위해 기본 생성자를 이용해서 객체를 생성하고** <br>
-**의존 자동 주입을 처리하기 위해 `setPet()` 메서드를 호출한다.**
