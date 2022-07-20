@@ -131,5 +131,113 @@ Person jang = ctx.getBean("jang", Person.class);
 
 ## 스캔 대상에서 제외하거나 포함하기
 
-`@Component` 애노테이션
-`@ComponentScan` 애노테이션
+`@ComponentScan` 애노테이션의 `excludeFilters`속성을 사용하면 대상을 자동 등록 대상에서 제외할 수 있다.
+
+```java
+@Configuration
+@ComponentScan(basePackages = {"com.example.demo.chapter5"}, 
+	excludeFilters = @Filter(type=FilterType.REGEX, pattern = "spring//..*Dao"))
+public class Chapter5Conf {
+	...
+}
+```
+위 코드는 `@Filter` 애노테이션의 `type` 속성값으로 `FilterType.REGEX`를 주었다. 이는 정규표현식을 사용해서 제외 대상을 지정한다는 것을 의미한다. `pattern` 속성은 `FilterType`에 적용할 값을 설정한다. 위 코드 중 일부인 `pattern = "spring.*Dao"`설정은 spring으로 시작하고 Dao로 끝나는 정규표현식을 지정했다.
+
+```java
+@Configuration
+@ComponentScan(basePackages = {"com.example.demo.chapter5"}, 
+	excludeFilters = @Filter(type=FilterType.ASPECTJ, pattern = "spring.*Dao"))
+public class Chapter5Conf {
+	...
+}
+```
+위 코드는 `@Filter` 애노테이션의 `type` 속성값으로 `FilterType.ASPECTJ`를 주었다. 이는 정규표현식과는 다른데 이 내용은 7장(Chapter 7)에서 살펴본다. 일단 위 코드 중 일부인 `pattern = "spring.*Dao"`설정은 spring 패키지에서 Dao로 끝나는 타입을 컴포넌트 스캔 대상에서 제외한다는 것만 알고 넘어가자.
+
+<br>
+
+### 특정 애노테이션 스캔 제외
+```java
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface Noproduct {
+}
+
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface ManualBean {
+}
+```
+만약 위 코드와 같은 `@Noproduct` `@ManualBean` 이라는 사용자 정의 애노테이션을 컴포넌트 스캔 대상에서 제외하고 싶다면 아래 코드처럼 `excludeFilters` 속성을 설정하면 된다.
+
+```java
+@Configuration
+@ComponentScan(basePackages = {"com.example.demo.chapter5"}, 
+	excludeFilters = @Filter(type=FilterType.ANNOTATION, 
+						classes = {Noproduct.class, ManualBean.class} ))
+public class Chapter5Conf {
+	...
+}
+```
+
+<br>
+
+### 기본 스캔 대상
+`@Component` 애노테이션을 붙인 클래스만 컴포넌트 스캔 대상에 포함되는 것은 아니다.
+아래와 같은 목록은 전부 컴포넌트 스캔대상에 포함된다.
+
+* `@Component`
+* `@Controller`
+* `@Service`
+* `@Repository`
+* `@Configuration`
+* `@Aspect`
+
+`@Aspect` 애노테이션을 제외한 나머지 애노테이션은 실제로는 **`@Component` 애노테이션에 대한 특수한 경우**이다. 예를들어 `@Controller` 애노테이션은 다음과 같다 
+
+```java
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Component
+public @interface Controller {
+
+	@AliasFor(annotation = Component.class)
+	String value() default "";
+
+}
+```
+각 애노테이션의 용도는 관련된 각각의 장에서 살펴보자.
+
+<br>
+<br>
+
+## 컴포넌트 스캔에 따른 충돌 처리
+
+1. 빈 이름 충돌
+
+spring 패키지와 spring2 패키지를 스캔하는데 두 패키지 모두 `MemberRegisterService` 클래스가 존재하고 두 클래스 모두 `@Component` 애노테이션을 붙였다면 익셉션이 발생한다.
+
+이런 문제는 컴포넌트 스캔 과정에서 쉽게 발생할 수 있다. 컴포넌트 스캔 과정에서 서로 다른 타입인데 같은 빈 이름을 사용하는 경우가 있다면 둘 중 하나에 명시적으로 빈 이름을 지정해서 이름 충돌을 피해야 한다.
+
+2. 수동 등록한 빈 충돌
+```java
+//spring 패키지에 Pet 컴포넌트
+@Component
+public class MyPet {
+	...
+}
+```
+```java
+//설정 파일
+@Configuration
+@ComponentScan(basePackages = {"spring"})
+public class Chapter5Conf {
+	@Bean
+	public MyPet myPet() {
+		return new MyPet(); 
+	}
+}
+```
+위 코드의 상황은 자동 등록된 빈의 이름은 첫 글자를 소문자로 바꾼 "myPet"이다. 그러나 설정파일에서 직접 `MyPet` 클래스를 "myPet"라는 이름의 빈으로 등록했다.
+
+다음과 같은 상황에서는 설정파일에서 **수동 등록한 빈을 우선 등록**한다. 즉 익셉션이 발생하지 않고 설정파일에서 생성된 빈만이 존재하게 된다.
