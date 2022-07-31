@@ -22,9 +22,120 @@ public void insert(Member member) {
 
 <br><br>
 
-JDBC, JDBC Template 사용법은 공부 목표가 아니기 때문에 따로 정리하지 않고 책을 읽고 넘어간다...(MyBatis나 JPA 공부. 나중에 필요하면 살펴볼 것.)
+~~JDBC, JDBC Template 사용법은 공부 목표가 아니기 때문에 따로 정리하지 않고 책을 읽고 넘어간다...(MyBatis나 JPA 공부. 나중에 필요하면 살펴볼 것.)~~
 
-스프링 부트를 사용하기 때문에 스프링에 커넥션 풀 설정 부분은 넘어간다.
+~~스프링 부트를 사용하기 때문에 스프링에 커넥션 풀 설정 부분은 넘어간다.~~
+
+먼저 Spring 설정을 살펴보고 Spring Boot에서는 어떻게 설정하는지 살펴본다.
+
+<br><br>
+
+## DataSource 설정
+
+책에서는 JDBC에 DataSource를 이용한 방식을 예시로 사용한다.
+
+JDBC API는 `DriverManager`외에 `DataSource`를 이용해서 DB 연결을 구하는 방법을 정의하고 있다. `DataSource`를 사용하면 다음 방식으로 `Connection`을 구할 수 있다.
+
+```java
+Connection conn = null;
+try {
+    //dataSource는 생성자나 설정 메서드를 이용해 주입받는다.
+    conn = dataSource.getConnection();
+}
+```
+
+DB 연동에 사용할 `DataSource`를 스프링 빈으로 등록하고 DB 연동 기능을 구현한 빈 객체는 `DataSource`를 주입받아 사용한다.
+
+책에서는 Tomcat JDBC에 DataSource를 사용하지만 나는 내가 쓰는 `HikariDataSource`를 사용함.
+
+* 스프링에서의 설정
+```java
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import com.zaxxer.hikari.HikariDataSource;
+
+@Configuration
+public class DBConfig {
+	
+	@Bean(destroyMethod = "close")
+	public HikariDataSource dataSource() {
+		HikariDataSource ds = new HikariDataSource();
+		ds.setDriverClassName("com.mysql.jdbc.Driver");
+		ds.setJdbcUrl("jdbc:mysql//localhost:3306/testTable");
+		ds.setUsername("test");
+		ds.setPassword("test");
+		ds.setValidationTimeout(10000);
+		ds.setConnectionTimeout(10000);
+		return ds;
+	}
+	
+}
+```
+* 스프링부트에서의 설정
+```properties
+# application.properties 파일 내용
+# 내가 프로젝트에 직접 쓰고 있는 properties 설정 파일 내용 중 일부
+spring.datasource.hikari.driver-class-name=net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+spring.datasource.hikari.jdbc-url=jdbc:log4jdbc:oracle:thin:@127.0.0.1:1521:xe
+spring.datasource.hikari.username=test
+spring.datasource.hikari.password=test
+spring.datasource.hikari.connection-timeout=10000
+spring.datasource.hikari.validation-timeout=10000
+```
+
+<br><br>
+
+### 커넥션의 상태
+
+커넥션 풀에 커넥션을 요청하면 해당 커넥션은 활성(active) 상태가 되고, 커넥션을 다시 커넥션 풀에 반환하면 유휴(idle) 상태가 된다. `DataSource`에서 `getConnection()`을 실행하면 커넥션 풀에서 커넥션을 가져와 커넥션이 활성 상태가 된다. 반대로 커넥션을 종료(close)하면 커넥션은 풀로 돌아가 유휴 상태가 된다. 
+
+`Connection`을 구하고 종료하는 코드를 명시적으로 보여주기 위해 다음과 같이 `Connection` 관련 코드와 `Statement`, `ResultSet` 코드를 별도의 `try` 블록으로 나눴다.
+
+```java
+public class DbQuery {
+	@Autowired
+	private HikariDataSource dataSource;
+	
+	public int count() {
+		Connection conn = null;
+		try {
+			conn = dataSource.getConnection(); // 풀에서 구함
+			try(Statement stmt = conn.createStatement(); 
+					ResultSet rs = stmt.executeQuery("Select count(*) From Member")) {
+				rs.next();
+				return rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} finally {
+			if(conn != null) 
+				try { conn.close(); /*풀에 반환*/ } 
+				catch (SQLException e2) { }
+		}
+	}
+}
+```
+위 코드 중 `conn = dataSource.getConnection();` 이 코드는 DataSource에서 커넥션을 구하는데 이때 풀에서 커넥션을 가져온다. 이 시점에서 커넥션 `conn`은 활성 상태이다. 커넥션 사용이 끝나고 `conn.close();` 코드를 사용해 커넥션을 종료하면 실제 커넥션을 끊지 않고 풀에 반환한다. 풀에 반환된 커넥션은 다시 유휴 상태가 된다.
+
+<br>
+
+커넥션 풀을 사용하는 이유는 성능 때문이다. 매번 새로운 커넥션을 생성하면 그때마다 연결 시간이 소모된다. 커넥션 풀을 사용하면 미리 커넥션을 생성했다가 필요할 때 커넥션을 꺼내 쓰므로 커넥션을 구하는 시간이 줄어 전체 응답 시간도 짧아진다. 
+
+<br>
+
+커넥션 풀에 생성된 커넥션은 지속적으로 재사용된다. 그런데 한 커넥션이 영원히 유지되는 것은 아니다. DBMS 설정에 따라 일정 시간 내에 쿼리를 실행하지 않으면 연결을 끊기도 한다. 예를 들어 DBMS에서 5분 동안 쿼리를 실행하지 않으면 DB 연결을 끊도록 설정했는데, 커넥션 풀에 특정 커넥션이 5분 넘게 유휴 상태로 존재했다고 하자. 이 경우 DBMS는 해당 커넥션의 연결을 끊지만 커넥션은 여전히 풀 속에 남아있다. 이 상태에서 해당 커넥션을 풀에서 가져와 사용하면 연결이 끊어진 커넥션이므로 익셉션이 발생하게 된다.
+
+<br>
+
+이런 상황을 방지하려면 커넥션 풀의 커넥션이 유효한지 주기적으로 검사를 하도록 설정을 해야한다. (책에서는 설정클래스에서 `ds.setMinEvictableldleTimeMillis(1000 * 60 * 3)` 이런식으로 설정했다.)
+
+<br>
+
+커넥션 풀의 여러 설정은 책에서 설명하나 너무 많으니 필요할 때 찾아보자.
+
+<br><br>
+
 
 <br>
 
