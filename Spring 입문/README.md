@@ -28,7 +28,7 @@
     * `@Autowired`속성: `required`
     * `Optional`
     * `@Nullable`
-    * 생성자 `@Autowired`
+    * 생성자 `@Autowired`, 세터 `@Autowired`
 5. chapter05 컴포넌트 스캔<br>
     * `@Component`
     * `@ComponentScan`
