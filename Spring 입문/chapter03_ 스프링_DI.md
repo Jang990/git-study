@@ -406,7 +406,7 @@ public class AppConf1 {
 * `AppConf2.class` 소스코드
 ```java
 @Configuration
-public class AppConf1 {
+public class AppConf2 {
     @Autowired
     private MemberDao memberDao;
     @Autowired
@@ -451,7 +451,12 @@ public class ChangePasswordService {
 
 ```java
 @Configuration
-public class AppConf1 {
+public class AppConf2 {
+    @Autowired
+    private MemberDao memberDao;
+
+    ...
+
     @Bean
     public ChangePasswordService changePwdSvc() {
         ChangePasswordService pwdSvc = new ChangePasswordService();
@@ -463,6 +468,7 @@ public class AppConf1 {
         // pwdSvc.setMemberDao(memberDao());
         return pwdSvc;
     }
+    
     ...
 }
 ```
@@ -522,10 +528,15 @@ ctx.getBean("빈의 이름", 클래스명.class);
 ```java
 ctx.getBean("AAA", abc.class); // 빈의 이름이 abc 인데 AAA를 인자로 줌
 ```
+<br>
+
 2. 빈의 실제 타입과 지정한 타입이 다름
 ```java
 ctx.getBean("abc", AAA.class); // 빈의 실제 타입이 abc.class 인데 AAA.class 를 인자로 줌
 ```
+
+<br>
+
 3. 해당 타입 빈이 한 개가 아님
 
 다음과 같이 이름을 지정하지 않고 타입으로만 빈을 구할 수도 있다.
