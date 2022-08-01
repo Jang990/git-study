@@ -114,7 +114,7 @@ jang
 
 `InitializingBean`, `DisposableBean` 두 인터페이스를 구현하기 싫다면 스프링 설정에서 직접 메서드를 지정해주면 된다. 
 
-다음과 같이 `@Bean` 태크에서 `initMethod`, `destroyMethod` 속성을 사용해서 초기화 메서드와 소멸 메서드의 이름을 지정하면 된다.
+다음과 같이 `@Bean` 애노테이션에서 `initMethod`, `destroyMethod` 속성을 사용해서 초기화 메서드와 소멸 메서드의 이름을 지정하면 된다.
 
 ```java
 //설정 코드
