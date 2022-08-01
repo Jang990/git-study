@@ -212,7 +212,7 @@ public class AppCtx {
 }
 ```
 
-PlatformTransactionManager은 스프링이 제공하는 인터페이스입니다. JDBC는 DataSourceTransactionManager 클래스를 PlatformTransactionManager로 사용하게 됩니다. 또한 connection 설정을 위해 DataSource를 주입하여 사용하게 됩니다.
+`PlatformTransactionManager`은 스프링이 제공하는 인터페이스입니다. JDBC는 `DataSourceTransactionManager` 클래스를 `PlatformTransactionManager`로 사용하게 됩니다. 또한 connection 설정을 위해 `DataSource`를 주입하여 사용하게 됩니다.
 
 @EnableTransactionManagement 어노테이션은 @Transactional 어노테이션을 찾아 트랜잭션 범위를 활성화하는 기능을 하게 됩니다.
 
@@ -277,7 +277,7 @@ public class Service2 {
 
 아니다. 같은 트랜잭션에서 실행된다.
 
-만약 `any()` 메서드에 `@Transactional` 애노테이션에 `propagation` 속성값이 `REQUIRES_NEW`라면 기존 트랜잭션 존재 여부에 상관없이 항상 새로운 트랜잭션을 시작한다.
+하지만 만약 `any()` 메서드에 `@Transactional` 애노테이션에 `propagation` 속성값이 `REQUIRES_NEW`라면 기존 트랜잭션 존재 여부에 상관없이 항상 새로운 트랜잭션을 시작한다.
 
 <br>
 
