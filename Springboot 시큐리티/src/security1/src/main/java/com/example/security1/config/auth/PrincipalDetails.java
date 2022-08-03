@@ -23,7 +23,6 @@ public class PrincipalDetails implements UserDetails {
 		collect.add(new GrantedAuthority() {
 			@Override
 			public String getAuthority() {
-				// TODO Auto-generated method stub
 				return user.getRole();
 			}
 		});
