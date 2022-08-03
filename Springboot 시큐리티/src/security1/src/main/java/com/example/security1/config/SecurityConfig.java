@@ -27,7 +27,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			/* -----이 코드들은 권한없는 접근을 로그인페이지로 이동시키는 코드들 -----*/
 			.and()
 			.formLogin()
-			.loginPage("/loginForm");
+			.loginPage("/loginForm")
 			/* --------------------*/
+			.loginProcessingUrl("/login")// /login 주소가 호출되면 시큐리티가 낚아채서 대신 로그인 진행
+			//.usernameParameter("username2")
+			.defaultSuccessUrl("/");//로그인이 완료되면 defaultSuccess Url인 / 페이지로 이동하게 된다.			
 	}
 }
