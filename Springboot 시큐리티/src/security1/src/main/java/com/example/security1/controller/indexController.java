@@ -1,11 +1,24 @@
 package com.example.security1.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.example.security1.model.User;
+import com.example.security1.repository.UserRepository;
 
 @Controller
 public class indexController {
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
 
 	//로그인한 사람만 접근
 	@GetMapping({"", "/"})
@@ -31,18 +44,26 @@ public class indexController {
 		return "manager";
 	}
 	
-	@GetMapping("/login")
-	public @ResponseBody String login() {
-		return "login";
+	@GetMapping("/loginForm")
+	public String login() {
+		return "loginForm";
 	}
 	
-	@GetMapping("/join")
-	public @ResponseBody String join() {
-		return "join";
+	@GetMapping("/joinForm")
+	public String joinForm() {
+		return "joinForm";
 	}
 	
-	@GetMapping("/joinProc")
-	public @ResponseBody String joinProc() {
-		return "회원가입 완료됨";
+	@PostMapping("/join")
+	public String join(User user) {
+		System.out.println(user);
+		user.setRole("ROLE_USER");		
+		String rawPassword = user.getPassword();
+		String encPassword = bCryptPasswordEncoder.encode(rawPassword);
+		user.setPassword(encPassword);
+		userRepository.save(user);
+		
+		return "redirect:/loginForm";
 	}
+	
 }
