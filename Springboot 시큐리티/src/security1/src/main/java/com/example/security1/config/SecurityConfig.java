@@ -1,6 +1,6 @@
 package com.example.security1.config;
 
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Bean; 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,4 +35,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			//.usernameParameter("username2")
 			.defaultSuccessUrl("/");//로그인이 완료되면 defaultSuccess Url인 / 페이지로 이동하게 된다.			
 	}
+	
 }
