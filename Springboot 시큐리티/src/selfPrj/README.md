@@ -61,6 +61,21 @@ public class LoginFailHandler extends SimpleUrlAuthenticationFailureHandler {
 }
 ```
 
+<br> 
+
+#### 로그인 오류 예외
+
+|               **Exception**               |                 **설명**                |
+|:-----------------------------------------:|:---------------------------------------:|
+| BadCredentialException                    | 비밀번호가 일치하지 않을 때 던지는 예외 |
+| InternalAuthenticationServiceException    | 존재하지 않는 아이디일 때 던지는 예외   |
+| AuthenticationCredentialNotFoundException | 인증 요구가 거부됐을 때 던지는 예외     |
+| LockedException                           | 인증 거부 - 잠긴 계정                   |
+| DisabledException                         | 인증 거부 - 계정 비활성화               |
+| AccountExpiredException                   | 인증 거부 - 계정 유효기간 만료          |
+| CredentialExpiredException                | 인증 거부 - 비밀번호 유효기간 만료      |
+
+
 <br>
 
 그리고 `SpringSecurityConfig` 파일에 위에서 생성한 객체를 만들어서 `failureHandler()` 메서드를 통해 등록해주면 정상 작동한다.
