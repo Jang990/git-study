@@ -20,3 +20,5 @@ https://www.youtube.com/watch?v=zi1l3lYJRL4&list=PL93mKxaRDidECgjOBjPgI3Dyo8ka6I
 
 
 ## 챕터별 내용 및 키워드
+
+스스로 스프링 시큐리티 프로젝트 만들어서 진행하면서 잡은 에러 - [링크](./src/selfPrj/README.md)
