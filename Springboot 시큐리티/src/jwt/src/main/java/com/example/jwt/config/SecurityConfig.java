@@ -6,9 +6,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.web.filter.CorsFilter;
 
 import com.example.jwt.filter.MyFilter1;
+import com.example.jwt.filter.MyFilter3;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,7 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.anyRequest().permitAll();
 		
 		http.addFilter(corsConfig);
-//		http.addFilterBefore(new MyFilter1(), BasicAuthenticationFilter.class);
+		
+		http.addFilterBefore(new MyFilter3(), SecurityContextPersistenceFilter.class);
+		
 		
 		http.csrf().disable();
 	}
