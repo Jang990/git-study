@@ -159,6 +159,8 @@ public class Chap9Controller {
 
 그래서 기본적으로 1~3 과정은 톰캣이 시작되면서 메모리에 올라오지만 4과정은 Request(요청)이 올 때까지 대기하게 된다.
 
+<br>
+
 DataSource는 톰캣이 시작되면서 미리 메모리에 올라와 있는다. DataSource는 DB와 직접적인 연결이 되어있다.
 
 ViewResolver와 인터셉터도 메모리에 올라와 있는다.
