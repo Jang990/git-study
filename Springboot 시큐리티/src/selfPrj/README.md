@@ -9,6 +9,8 @@ Spring 입문에서 배운 내용도 같이 써본다.
 
 
 ## 오류 해결
+
+### 기본 설정 prefix, suffix
 ```yml
 spring:
   mvc:
@@ -28,6 +30,34 @@ spring:
     view:
 #       prefix: /templates/
       suffix: .html
+```
+
+<br>
+<br>
+
+### 패스워드 인코더
+
+스프링 시큐리티 설정파일에 꼭 패스워드 암호화 객체를 등록하자. 등록하지 않으면 시큐리티가 처리하지 못하고 500 에러가 난다.
+
+```java
+@Bean
+public BCryptPasswordEncoder bCryptPasswordEncoder() {
+	return new BCryptPasswordEncoder();
+}
+```
+
+<br>
+<br>
+
+### UserDetailsService를 Service로 등록
+
+`UserDetailsService` 객체를 구현하고 꼭 `@Service` 어노테이션을 이용해서 서비스로 등록하자. 로그인이 이루어지지 않는 경우 어노테이션을 붙혔는지 확인해보자.
+
+```java
+@Service
+public class SecurityUserDetailService implements UserDetailsService{
+	...
+}
 ```
 
 <br>
