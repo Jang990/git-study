@@ -18,13 +18,10 @@ public class ToyPrjController {
 	
 	@RequestMapping("/loginSuccess")
 	public String loginSuccese(HttpServletRequest request, UserInfo user) {
-		System.out.println("정상작동");
-		
-		//DB 연결없이 하드코딩
 		String userId = user.getId().get();
 		String userPwd = user.getPassword().get();
 		
-		if(user.getIdRemember().isEmpty()) {
+		if(!user.getIdRemember().isPresent()) {
 			System.out.println("비어있다.");
 			user.setIdRemember(false);
 		}
@@ -35,7 +32,7 @@ public class ToyPrjController {
 		System.out.println("PW:"+userPwd);
 		System.out.println(":"+userRemember);
 		
-		
+		//DB 연결없이 하드코딩
 		if(userId.equals("jang") && userPwd.equals("1234")) {
 			return "toyPrj/loginSuccess";
 		}

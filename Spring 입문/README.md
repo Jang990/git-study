@@ -80,3 +80,13 @@
 16. . <br>
 17. **chapter17 프로필과 프로퍼티 파일**<br>
     * `@Profile`
+
+<br>
+<br>
+
+[책 내용 혼자 적용하면서 발생한 오류](source_code/demo/src/main/java/com/example/demo/toyprj/README.md)
+
+
+인터셉터는 스프링부프 시큐리티 [selfPrj](../Springboot%20%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0/src/selfPrj/)에서 적용했다.
+<br>
+
