@@ -21,8 +21,8 @@ public class MyFilter3 implements Filter{
 		HttpServletResponse res = (HttpServletResponse) response;
 		
 		if(req.getMethod().equals("POST")) {
+			System.out.println("POST 요청됨");
 			String headerAuth = req.getHeader("Authorization");
-					
 			if(headerAuth.equals("cos")) {
 				chain.doFilter(req, res); //다운캐스팅한것을 체인에 넘김
 			} else {
