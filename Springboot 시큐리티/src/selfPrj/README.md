@@ -150,7 +150,72 @@ System.out.println("---------->? 비밀번호" +password);
 <br>
 <br>
 
+### 필터 적용 에러
 
+다음과 필터를 적용하기전에 `Filter`를 구현한 필터 클래스가 `chain.doFilter(request, response);` 코드로 프로세스를 계속 진행할 수 있도록 만들어 주어야 한다.
+```java
+public class MyFilter1 implements Filter{
+
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+		System.out.println("필터 1");
+		chain.doFilter(request, response);
+	}
+
+}
+```
+
+<br>
+
+필터를 적용하는 방법 중 필터 설정 파일을 만드는법으로 진행을 할 때는 다음과 같이 `new FilterRegistrationBean<필터클래스>(new 필터클래스())`를 이용해서 객체를 만들고, 설정해서 빈으로 등록해야 한다.
+
+```java
+@Configuration
+public class FilterConfig {
+	@Bean
+	public FilterRegistrationBean<MyFilter2> filter2() {
+		FilterRegistrationBean<MyFilter2> bean = new FilterRegistrationBean<MyFilter2>(new MyFilter2());
+		bean.addUrlPatterns("/*");
+		bean.setOrder(0);
+		return bean;
+	}
+}
+```
+
+<br>
+
+원래는 `http.addFilterBefore(new MyFilter1(), 시큐리티필터.class);` 이렇게 필터를 생성해야 하는데 잘못해서 아래 코드와 같이 필터를 빈으로 등록하고 `http.addFilterBefore(myFilter1(), 시큐리티필터.class);` 이렇게 작성했다.
+
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		...
+		
+		http.addFilterBefore(myFilter1(), SecurityContextPersistenceFilter.class);
+	}
+	
+	@Bean
+	public MyFilter1 myFilter1() {
+		return new MyFilter1();
+	}
+	
+	...
+}
+```
+
+위와 같이 시큐리티 설정에 필터를 빈으로 등록하면 자동으로 필터로 등록되는 것 같다. 실행 결과는 다음과 같다. 정확한 원리는 아직 잘 모르겠다.
+
+```
+필터 1 - 시큐리티 설정에 addFilterBefore() 코드로 필터 등록
+필터 2 - 필터 설정으로 등록
+필터 3 - 필터 설정으로 등록
+필터 1 - 시큐리티 설정에서 @Bean으로 등록한 필터
+```
 
 <br>
 <br>
