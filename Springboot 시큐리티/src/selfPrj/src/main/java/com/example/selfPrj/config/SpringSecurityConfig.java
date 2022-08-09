@@ -5,8 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 import com.example.selfPrj.config.auth.LoginFailHandler;
+import com.example.selfPrj.filter.MyFilter1;
 
 @Configuration
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
@@ -25,6 +27,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 			.failureHandler(loginFailHandler())
 			.defaultSuccessUrl("/user/index");
 		
+		http.addFilterBefore(new MyFilter1(), SecurityContextPersistenceFilter.class);
 	}
 	
 	@Bean
@@ -36,4 +39,5 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 	public LoginFailHandler loginFailHandler() {
 		return new LoginFailHandler();
 	}
+	
 }

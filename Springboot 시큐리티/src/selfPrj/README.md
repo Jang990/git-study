@@ -220,3 +220,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 <br>
 <br>
 
+### 인터셉터와 필터
+
+시큐리티를 적용시키고 인터셉터를 적용시키니 오류가 발생한다.
+
+```
+필터 1	- 시큐리티 addFilterBefore로 적용
+preHandle 실행
+postHandle 실행
+afterCompletion 실행
+```
+위처럼 콘솔에 찍히고 필터 설정으로 적용한 `MyFilter2`, `MyFilter3`이 콘솔에 출력되지 않고 500 에러가 발생한다.
+
+그래서 인터셉터에서 `response.sendRedirect(request.getContextPath());` 코드를 빼먹은것 같아서 넣어보면 위와 같이 콘솔이 찍히는데, 좀 다른점은 브라우저에 500 에러가 아닌  'localhost에서 리디렉션한 횟수가 너무 많습니다.'라는 오류가 뜨면서 화면에 뷰가 보이지 않는다.
+
+<br>
+
+아래가 관련 오류 해결방법인 것 같다.
+```
+spring security 에서 리디렉션 순환 오류 발생 시.
+
+applicartionContext-security.xml 에서 로그인 URL 인터셉터를 모든 리소스를 차단하는 인터셉터의 위쪽으로 배치시켜야 함.
+
+만약 그렇지 않다면 리디렉션 순환 오류 발생.
+```
+
+출처: https://lifebt.tistory.com/7 [Break Time.:티스토리]
