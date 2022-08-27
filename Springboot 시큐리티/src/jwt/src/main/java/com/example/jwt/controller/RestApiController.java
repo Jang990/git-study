@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RestApiController {
 	@GetMapping("/home")
 	public String home() {
+		System.out.println("홈");
 		return "<h1>home</h1>";
 	}
 	

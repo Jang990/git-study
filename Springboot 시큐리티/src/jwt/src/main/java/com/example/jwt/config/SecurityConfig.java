@@ -9,6 +9,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.web.filter.CorsFilter;
 
+import com.example.jwt.config.jwt.JwtAuthenticationFilter;
 import com.example.jwt.filter.MyFilter1;
 import com.example.jwt.filter.MyFilter3;
 
@@ -35,7 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/api/v1/admin/**").hasAnyRole("ADMIN")
 			.anyRequest().permitAll();
 		
-		http.addFilter(corsConfig);
+		http.addFilter(corsConfig)
+			.addFilter(new JwtAuthenticationFilter(authenticationManager()));
 		
 		http.addFilterBefore(new MyFilter3(), SecurityContextPersistenceFilter.class);
 		
