@@ -2,6 +2,7 @@ package com.example.jwt.config.jwt;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Date;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -14,6 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.example.jwt.config.auth.PrincipalDetails;
 import com.example.jwt.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -78,6 +81,19 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
 		
-		super.successfulAuthentication(request, response, chain, authResult);
+		PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
+		
+		//빌더 패턴이다.
+		String jwtToken = JWT.create()
+				.withSubject(principalDetails.getUsername()) // 토큰의 이름 - 크게 의미없음
+				.withExpiresAt( //만료 시간 - 토큰의 유효시간. 토큰이 탈취돼도 안전하도록 좀 짧게주는게 좋음.
+						new Date(System.currentTimeMillis()+(60000*10)) //현재시간 + 유효시간(10분)
+					)  
+				.withClaim("id", principalDetails.getUser().getId()) //비공개 클레임. 넣고싶은 키 벨류값 막 넣으면 된다.
+				.withClaim("username", principalDetails.getUser().getUsername())
+				.sign(Algorithm.HMAC512("cos")); //HMAC 방식
+		
+		//사용자에게 전달
+		response.addHeader("Authorization", "Bearer "+ jwtToken); //"Bearer "에 한칸 뛰는거 잊지마라 
 	}
 }
