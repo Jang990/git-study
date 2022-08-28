@@ -12,8 +12,10 @@ import org.springframework.security.web.context.SecurityContextPersistenceFilter
 import org.springframework.web.filter.CorsFilter;
 
 import com.example.jwt.config.jwt.JwtAuthenticationFilter;
+import com.example.jwt.config.jwt.JwtAuthorizationFilter;
 import com.example.jwt.filter.MyFilter1;
 import com.example.jwt.filter.MyFilter3;
+import com.example.jwt.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private final CorsFilter corsConfig;
+	private final UserRepository userRepository;
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -39,7 +42,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.anyRequest().permitAll();
 		
 		http.addFilter(corsConfig)
-			.addFilter(new JwtAuthenticationFilter(authenticationManager()));
+			.addFilter(new JwtAuthenticationFilter(authenticationManager()))
+			.addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository));
 		
 		http.addFilterBefore(new MyFilter3(), SecurityContextPersistenceFilter.class);
 		

@@ -30,6 +30,7 @@ public class MyFilter3 implements Filter{
 				out.println("인증안됨");
 			}
 		}
+		chain.doFilter(req, res); //내가 넣은 코드
 	}
 
 }
