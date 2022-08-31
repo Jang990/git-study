@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 스프링 시큐리티에 UsernamePasswordAuthenticationFilter 가 있다
 '/login' 요청해서 username,password 전송(post)
 UsernamePasswordAuthenticationFilter가 동작을 한다
-하지만 formLogin을 disable 횄기 때문에 동작하지 않는다. 그래서 시큐리티 필터에 달아주어야 한다.
+하지만 formLogin을 disable 했기 때문에 동작하지 않는다. 그래서 시큐리티 필터에 달아주어야 한다.
 */
 @RequiredArgsConstructor //자동으로 멤버 변수를 받는 생성자를 만듦
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
