@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.selfjwt.config.auth.userDetails;
 import com.example.selfjwt.model.UserModel;
 import com.example.selfjwt.repository.UserRepository;
 
@@ -61,11 +62,11 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 			return;
 		}
 		
-		//정상처리
-		UserModel user = userCheck.get();
-		UsernamePasswordAuthenticationToken token = 
-				new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
-		SecurityContextHolder.getContext().setAuthentication(token);
+		//정상처리 - 인증된 사용자이기 때문에 임의로 Authentication 객체를 만들어서 세션에 넣음
+		userDetails user = new userDetails(userCheck.get());
+		Authentication authentication = 
+				new UsernamePasswordAuthenticationToken(user, null,user.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 		System.out.println("===============>"+"세션만들기");
 		chain.doFilter(request, response);
 	}
