@@ -1,0 +1,714 @@
+		2강
+v-on:click=""
+이렇게 연결을해야 vue가 통제하는 메서드가 연결된다.
+v-if="liked"  liked가 true일때 보여진다.
+v-else 는 v-if가 true가 아니라면 보여진다.
+나중에는 v-else-if도 배울것이다.
+
+v-if와 v-else는 "형제 태그"면서 "인접"해 있어야 한다.
+<div v-if="liked">좋아요 눌렀음</div>
+<div>인접하지 않음</div>
+<button v-else v-on:click="onClickButton">Like</button>
+이렇게 인접하지 않은 if else는 동작하지 않는다.
+
+<div v-if="liked">좋아요 눌렀음</div>
+<button v-else v-on:click="onClickButton">Like</button>
+<script>
+    const app = new Vue({
+        el: '#root',
+        data: {
+            liked: false,
+        },
+        methods: {
+            onClickButton() {
+                this.liked = true
+            }
+        },
+    });
+</script>
+뷰의 강점. 데이터를 관리하면 화면은 뷰가 알아서 바꿔준다.
+이 예제에서는 liked를 관리하면 화면은 뭘 보여줄지 뷰가 알아서 보여준다.
+
+v- 가 붙어있으면 js코드를 ""안에 쓸 수 있다.
+v-if="liked + 1 === 5" 
+v-if="어떤함수()" 이런식으로 자바스크립트 코드를 쓸 수 있다.
+
+
+
+
+ 3, 4강
+어떠한 화면을 구현하고 싶다면 구현하고자하는 화면에서 바뀌는 부분을 찾아서 data로 등록해주면된다.
+
+구구단 풀이
+const app = new Vue({
+            el: "#root",
+            data: {
+                x: Math.ceil(Math.random()*9),
+	   value: '',
+            },
+            methods: { },
+        });
+만약 x를 화면에 표시하고 싶다면
+{{x}} 이렇게 중괄호를 두번 감싸면 화면에 표시된다. - 당연히 Vue가 컨트롤하고 있을때 적용된다.
+위 예제에서 x를 출력하는 것은 #root에서만 된다는 것이다.
+{{x + y}} 이렇게 중괄호안에 자바스크립트 식을 쓸 수 있다.
+
+만약 위에 vue에 value과 사용자에게 입력받는 input태그 값을 연결하고 싶다면
+<input type="text" v-model="value">
+이렇게 v-model을 쓰면 된다.
+
+<form v-on:submit="onSubmitForm(e)">
+            <input type="text" v-model="value">
+            <input type="submit" value="입력!">
+</form>
+form에서 submint을 눌렀을때 함수를 실행하고 싶다면 위와 같이
+v-on:click이 아닌 v-on:submit=""을 사용하면 된다.
+
+뭔가 함수가 실행하면서 화면에 정보를 바꿀때
+e.preventDefalut();를 써서 vue나 react같은 싱글페이지앱을 만들때 
+화면이 새로고침되는 것을 막아준다.
+onSubmitForm(e) {
+
+}
+항상 new Vue({}); 에서 data를 쓸때는 this를 잊지말자. this를 안쓰면 오류난다.
+
+<form v-on:submit="onSubmitForm">
+            <input type="text" v-model="value">
+            <input type="submit" value="입력!">
+</form>
+여기서 입력을 눌렀을 때 input에서 포커스를 계속 가졌으면 좋겠면
+
+<input type="text" ref="answer" v-model="value">
+이렇게 ref라는 것을 추가하고 onSubmitForm()에서
+this.$refs.answer 이렇게 태그에 접근할 수 있다. jQuery나 Document.QuerySelector와 같은 것이다.
+
+this.$refs.answer.focus() 
+포커스를 계속 가지고 있으면 좋겠다면 이렇게 설정해주면 된다
+
+ref를 남용하는 것은 좋지않다. 이렇게 어쩔수 없는 상황만 쓰는것이 좋다.
+도저히 data로 focus를 할 수 없는 상황에 쓰는 것이다
+this.$refs.answer.value="데이터들"; 이렇게 쓰는 것은 최악이다.
+데이터를 변경할꺼면 data: {} 이 안에서 사용하자.
+화면과 데이터의 불일치가 일어날 수 있으니 어쩔수 없는 경우만 사용하자.
+
+
+
+		5강
+끝말잇기 예제로 
+3,4강에 했던 내용 그대로 복습차원에서 로직만 바꿔서 짜봄
+
+
+
+		6강
+여러 페이지들을 보면
+페이지를 막 바꿔주는데 이건 어떻게 하는것이냐?
+v-if v-else 이걸 이용하는 것이다.
+뒤로가서는 라우터 이런걸 배우는데 큰 개념은 저걸 사용하는 것이다.
+일단 모든 화면을 다 만들어놓는다.
+<div v-if=" route === 'main' ">메인화면<div>
+<div v-else-if=" route === 'sub' ">서브화면<div>
+...
+이렇게 화면을 짠다. 
+실무에서는 이렇게 추잡하게는 하지 않는데
+큰 개념은
+화면은 만들어 놓고 
+바뀌는 부분은 다 데이터에 때려박고 
+메소드 이벤트리스너들을 달아주는방식.
+그렇게 싱글페이지애플리케이션(SPA)가 되는 것이다.
+
+근데 이렇게 화면을 모두 준비해놓는다면
+사이트가 무거워진다.
+그걸 해결하는 것을 또 배워야하고 그런다.
+근데 기본적인 원리는 이거라는것을 먼저 알아두자.
+
+
+
+		7,8,9강
+끝말잇기 예제를 해봤다.
+근데
+끝말잇기를 하나의 페이지에서 3개를 진행하고 싶다면?
+컴포넌트화 시키면 매우 편할 것이다.
+
+ 1. vue 인스턴스
+<body>
+    <div id="root">
+        ...
+    </div>
+</body>
+<script>
+    const app = new Vue({
+        el: '#root',
+        data: {...},
+        methods: {...},
+    });
+</script>
+
+ 2. vue 컴포넌트 
+<body>
+    <div id="root">
+        <word-relay></word-relay>
+    <div>
+</body>
+<script>
+    Vue.component('word-relay',{
+        template: `
+        <div>
+            ...
+        </div>
+        `,
+        data() {
+            return {
+                question: '김밥',
+                answer: '',
+                result: '',
+            };
+        },
+        methods: {
+            checkString(e) { ... },
+    });
+</script>
+<script>
+    const app = new Vue({
+        el: '#root',
+    });
+</script>
+
+매우 중요!
+컴포넌트(Vue.componet(...))는 인스턴스(new Vue({...}))보다는 위에!
+스크립트는 div#root보다는 아래에 위치!
+
+스크립트는 div#root 아래와도 알아서 랜더링해줌
+
+ 먼저 컴포넌트의 template를 살펴보자
+'' 가아닌 ``를 사용했다.
+줄바꿈도 알아볼수 있기 때문에 ``를 사용했다.
+그리고 1개의 태그만 있어야한다.
+<div></div>
+<div></div>
+<div></div>
+이렇게 형제 태그가 있으면 안되고 만약 3개를 넣고 싶다면
+<div>
+	<div></div>
+	<div></div>
+	<div></div>
+</div>
+이런식으로 하나의 태그안에 넣어서 사용해야한다.
+
+ data를 살펴보자
+data: {...} 에서 data() { return {...} }
+이렇게 바뀌였다.
+만약 너가 data: {...} 이런식의 데이터를 3개의 컴포넌트에서 사용한다고 생각해보자.
+그럼 3개의 컴포넌트가 데이터를 공유해서 사용하는 문제가 있을 것이다.
+그래서 data() {return {...} } 이렇게 오브젝트형으로 각각 반환해주는것이다.
+
+
+어쨋든
+끝말잇기를 하나의 컴포넌트로 만들었을때
+<div id="root">
+        <word-relay></word-relay>
+        <word-relay></word-relay>
+        <word-relay></word-relay>
+<div>
+이렇게 사용할 수 있다는 것이다.
+하지만 시작하는 글자를 다르게 하고 싶을 수 있다.
+첫번째 끝말잇기는 "초밥"
+두번째 끝말잇기는 "장미"
+세번째 끝말잇기는 "고가"
+이렇게 바꾸고 싶다면 
+
+<div id="root">
+        <word-relay start-word="초밥"></word-relay>
+        <word-relay start-word="장미"></word-relay>
+        <word-relay start-word="고가"></word-relay>
+<div>
+<script>
+        Vue.component('word-relay' {
+                ...
+                props: ['startWord'],
+                data() {
+                        return { word: this.startWord, ... }
+                }
+                ...
+        });
+</script>
+이렇게 start-word를 태그안에 넣어주고
+props에서 카멜표기법으로 받아주면 된다.
+ 중요한것은
+word-relay 표기법으로 표기를하고 스크립트에서 wordRelay와 같은 카멜표기법으로 받는것이다.
+
+같은원리로
+상단에 Vue.component('word-relay' ...)를 wordRelay로 바꾼다면
+html에서는 word-relay로 똑같이 쓸수 있다.
+
+웹팩을 안쓴다면 script의 순서를 고려하고 지랄을해야한다.
+웹팩을 쓴다면 따로 js소스를만들고 순서같은걸 고려하지 않아도 된다.
+
+
+
+		10강
+1. 웹팩을 쓰려면 먼저 node를 받아야 한다.
+node사이트에가서 current가 아닌 LTS버전으로 받자
+설치를하면 node -v 를 명령 프롬프트에 입력하면 버전이 나온다
+node를 설치하면 npm이 따라온다
+npm -v를 하면 버전이 나온다
+npm은 남이 만들어놓은 js코드를 가져다 쓰게해주는 것이다.
+
+
+2. 사용할 workspace로 이동하여 npm init을 치고
+사용할 패키지 이름을 쓰고 나머지는 다 엔터를 친다
+
+그럼 package.json 파일이 생긴다.
+여기에 내가 쓰는 남의 소스코드들이 정리가 된다.
+이걸 왜 정리하냐면 각각의 소스코드들이 버전이 있다.
+실무에서는 남의 소스코드를 100개 이상은 쓰기 때문에
+남의 소스코드의 버전을 정확히 기억하기 위해서 사용한다.
+(내 생각에 이게 gradle, maven같은 버전관리용인듯)
+
+
+3. npm install vue 또는 npm i vue (같은거다)
+스크립트 많아지는게 불편해서 웹팩을쓰는거니까 이제 스크립트 태그는 쓰지 않을 것이다.
+
+
+4. npm i webpack webpack-cli -D
+웹팩이랑 웹팩cli를 설치하는데
+나는 개발할때만 웹팩이랑 웹팩cli를 쓰겠다.
+라는 의미이다.
+-D 대신 --save-dev를 입력해도 된다.
+
+vue의 경우 dependencies에 있지만 
+웹팩과 웹팩-cli는 devDependencies에 있다.
+vue의 경우 개발,배포시에 둘다 사용하는데
+웹팩과 웹팩-cli는 개발할 때만 필요하고 배포할 때는 필요하지 않다.
+
+
+5. webpack.config.js 파일 생성하기
+이제 웹팩을 설정하면된다.
+이걸 좀 어려워하는 사람이 많다.
+module.exports = {
+    
+}
+노드에 모듈을 만들었다 생각하자
+이 모듈을 웹팩이 웹팩처리를 할때 사용한다. 여기에 웹팩 설정을 넣으면 되는 것이다.
+
+설정은 크게 4가지가 중요하다.
+entry, module, plugins, output
+module.exports = {
+    entry: {
+    },
+    module: {
+    }, 
+    plugins: [],
+    output: {
+    },
+}
+웹팩을 왜 쓰는가. 스크립트가 100개 이상으로 너무 많아져서 하나로 합치려고
+그럼 그 하나로 합칠 파일이 필요하다.
+그 100개 이상중 대표가 되는 것이 엔트리이다.
+
+main.js라는 엔트리 파일을 만들자. 이름은 마음대로 지어도 된다.
+
+여기 내용은 3.숫자야구에 webpack.config.js에 다 써놓음 그 파일을 봐봐라
+
+
+	11강
+vue파일설정
+
+Vue.component() 대신 export default를 사용한다.
+
+"scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+부분을
+"scripts": {
+    "build": "webpack"
+  }, 
+로바꿈
+
+npm run build 명령어 입력
+나오는 오류 절대경로로 바꿔달라.
+오류잡음
+
+
+
+		12강
+npm run build 실행
+
+계속오류나는데 뭐 설치하고 설정하고 이런것만함
+
+npm i vue를 하는데 원하는 버전을 받는법
+npm i vue@2.6.12
+이런식으로 @뒤에 원하는 버전쓰기.
+
+npm i vue-loader
+npm i vue
+npm i vue-template-compiler (뷰랑 버전이 맞아야함)
+
+뭔가 파일의 변경이 있을때 마다 
+npm run bulid를 해주어야한다.
+설정상에 dist폴더안에 app.js는 몰라도되고 웹팩을 믿고 그냥 쓰는거다.
+
+
+		13강
+v-for="item in items"
+항상 기억할것은 v- 가 붙어있는곳에 ""는 자바스크립트 코드이다.
+function, try같은 예약어들은 쓸수 없다는 뜻이다.
+
+v-on:submit="..." 을
+@:submit="..."로 바꿀 수 있다.
+그리고 e.preventDefault()를 기본적으로 하는데
+이걸 하기 싫으니까
+@:submit.prevent="..." 이렇게 자동으로 하도록 바꿀수 있다.
+
+
+
+		14강
+methods에는 분리할 수 없는 함수들만 넣자.
+거기서만 사용가능한 함수들만. 다른함수에서도 사용가능한 함수들은 밖으로 빼자.
+data, methods 에는 현재 컴포넌트의 화면과 밀접한 연관이 있는 것들만 넣어라.
+
+NumberBaseball.vue에
+export default { ... } 가 있는데
+export default를 씀으로써 
+import NumberBaseball from './NumberBaseball'; 
+이렇게 import를 이용하여 다른 js코드에서 가져다 쓸수 있게 되었다.
+import한 후 
+new Vue(NumberBaseball).$mount("#root"); 이렇게 인스턴스를 생성하는 것이다.
+여기까지는 자바스크립트에 모듈시스템이고
+
+노드에서는
+const path = require('path');
+module.exports = {...}
+이런 모듈시스템을 사용하는것이다.
+
+
+
+		15강
+강의초반 웹팩설정 rules에 대한 설명
+
+dist - npm 빌드하면 생기는 파일
+node_modules - npm i 하면 생기는 파일
+이 두 폴더 빼고 설정파일만 복붙하고다니면된다.
+
+npm run bulid를 하기 싫으면
+ "scripts": {
+    "build": "webpack"
+  },를
+ "scripts": {
+    "build": "webpack --watch"
+  },
+이렇게 --watch를 붙혀주면
+코드가 수정될때마다 웹팩이 그 파일을 보고있어서 알아서 빌드한다.
+
+
+
+		16강
+<div v-bind:class="status"></>
+...
+<script>
+export default { 
+data() { return {state: 'waiting' ...} ,
+...
+}
+</script>
+이러면 저 v-bind로 클래스명이 waiting이 된다.
+
+v-on:click="onReset"을 축약하면
+@click="onReset" 이렇게 하듯
+
+v-bind:class="status" 를 축약하면
+:class="status" 이렇게 축약할 수 있다.
+
+vue에서 style을 쓰려면 vue-style-loader와 css-loader가 있어야한다.
+npm i vue-style-loader -D 
+개발자용으로 다운
+npm i css-loader -D
+
+그리고 rules에
+{
+            test: /\.css$/,
+            use: [
+                'vue-style-loader',
+                'css-loader',
+            ]
+}
+추가
+
+loader는 자바스크립트가 아닌 얘들을 자바스크립트로 바꿔주는 역할
+
+ <style scoped></>에서 scoped 의미
+css(<style>)는 html에 보여지는데 만약
+#screen {...}을 쓰는 2가지 다른 컴포넌트가가 있고 하나의 html파일에서 쓴다면
+#screen에 대한 같은 스타일이적용될 것이다.
+하지만 scoped를 쓰면
+vue에서 각각 임의의 id를 붙혀서 사용하기때문에 
+다른 컴포넌트에서 하나의 id의 스타일을 쓰는 일이 없어진다.
+
+즉 scoped를 쓰면
+<style>data-v-22c711ee{...}</style> ...
+<div data-v-22c711ee id="screen"></div>
+이런식으로 임의의 vue 아이디를 붙히고
+scoped를 안쓰면
+<style>#screen{...}</style> ...
+<div id="screen"></div>
+이렇게 그대로 쓰게되는 것임
+
+대부분의 경우 scoped를 사용하고 전역으로 쓰일때만 scoped를 쓰지 않는다
+
+이전에는 npm run build를 했고
+이제는 --watch덕분에 사이트만 새로고침하면 되었다
+근데 새로고침도 귀찮다면
+npm i webpack-dev-server -D
+를 해주면 된다. 웹팩 watch에 진화판이라고 생각하면된다.
+그리고
+"scripts": {
+    "build": "webpack --watch",
+    "dev": "webpack-dev-server"
+  },
+이렇게 "dev"를 추가해주고
+npm run dev 를 해주면 된다.
+
+(근데 나는 해보니까 안되서 그냥 npm run build 쓰겠다.)
+
+
+		18강
+result.reduce((a, c) => a + c, 0)
+result 배열에 숫자들을 전부 더해줌
+result.reduce((a, c) => a + c, 0) / result.length
+result 배열의 평균을 구함. 초기값이 없으면 NaN이 나옴. 
+
+
+
+		19강
+계산을 <template></> 안에서 하는것은 좋지 않다
+예를들어
+<template>
+<div>{{ (a+ b + c + e)/ (f * g) }}</div>
+</template>
+이런것이 좋지 않다는 것이다.
+
+computed: {} 라는 것이 있다.
+export default { data()..., computed: {}, .... }
+
+computed: {
+average() { return (this.a+ this.b + this.c + this.e)/ (this.f * this.g); }
+}, 
+이렇게 만들고 {{ average }} 이렇게 하는게 좋다.
+
+ data와 computed의 차이
+data는 일반데이터를 사용할 때.
+computed는 일반데이터를 가공해서 쓸때 사용한다. 그리고 computed는 캐싱이 된다.
+ computed 캐싱
+<div>{{msg}}입니다. {{ 복잡한 연산 }}.</div>
+만약 msg가 바뀐다면 템플릿부분이 다시 실행된다. 그럼 복잡한 연산이 다시 실행될것이다.
+하지만 computed로 바꾼다면
+<div>{{msg}}입니다. {{ result }}.</div>
+... computed: { result() { return 복잡한연산; }}, ...
+복잡한 연산이 다시 실행되지 않는다.
+
+Vue에서는 성능문제가 많이 발생하지 않지만 computed같은 것은 성능을 챙겨주어야한다.
+
+ v-show
+<div v-show="result.length"></div>
+v-show에 내용이 false면 display:none; 이되고 true면 보여진다.
+
+ v-show와 v-if와 다른점이 무엇이냐?
+v-if는 html문서 자체에서 적용한 태그가 안보이고
+v-show는 html문서에는 존재하지만 display:none;이 되어있을 뿐이다.
+이게 차이이다.
+
+v-show와 v-if에 이런 차이는 매우 큰 차이이다.
+태그하나가 있냐없냐는 전체 레이아웃에 영향을 줄 수 있기 때문이다.
+근데 v-if를 많이 쓰긴 하는것 같다.
+v-if를 쓰면 v-else v-else-if같은것을 같이 쓸 수 있기 때문
+
+
+ <template> 태그
+<template>
+여기에 html에 쓸것들을 작성한다.
+</template>
+
+그런데 이 태그안에서 <template>를 사용하면
+<template>
+	<div>
+		<div></div>
+		<template v-if="result.length">
+			<button></button>
+			<h3></h3>
+		</template>
+	</div>
+</template>
+이렇게 사용한다면 사용자페이지 html에서는 v-if가 true일때
+<div></div>
+<button></button>
+<h3></h3>
+이렇게 없는 태그로 쳐서 형제가 되어서 나온다.
+어떠한 태그로 묶지않고 v-if만 적용만하고싶을때 사용한다.
+
+
+
+		20강
+vue-devtools 를 사용한다 - 크롬확장프로그램
+배포환경에서는 이걸 사용하지 못하도록 강제로 막는게 보안에 좋다
+Vue.config.devtools = false;
+
+Vue 컴포넌트는 항상 두단어 이상을 사용해서 만든다
+기존태그가 <table>같이 한단어로 이루어져있기 때문에 혼동이 올 수 있기 때문이다.
+table-component같이 다르게
+공식문서에서 필수라고 적어뒀다.
+
+웹팩 dev server는 메모리에 dist같은 폴더 내용을 저장하기 때문에 dist폴더가 따로 안생긴다
+
+
+
+		21강
+:style
+:class
+둘 다 v-bind가 생략된 것.
+위에 두가지는 내용에 객체를 지원한다
+:class = "{ state: true, hello: false }" - class는 true인 state만 된다.
+:style = "{ backgroundImage: '', fontSize: '14px' }"
+이렇게 지원한다.
+여기서 주의할점은 :style에 backgroundImage이다.
+css에서는 background-image 이지만 저기는 자바스크립트이기때문에 backgroundImage로 쓴다.
+
+
+<button @click="onClickButton('바위')">바위</button>
+<button @click="onClickButton('가위')">가위</button>
+<button @click="onClickButton('보')">보</button>
+버튼중 뭐를 누른지 잘모르겠으니 인수를 넣어서 구분하자.
+
+<div id="computer" :style = "{ background: `url(https://en.pimg.jp/023/182/267/1/23182267.jpg) 0 0`}"></div>
+여기서 0 0의 좌표값을
+0, -142, -284으로 이동하는걸 반복하면서 다른 이미지를 보여주어야한다.
+이런방식은 html 2.0이 개발되기 이전 이미지를 가져오는게 무거운작업이라 이렇게 처리했다. 요즘은 이렇게 잘 안한다.
+이렇게 바뀌는 것은 뭐다? data로 넣어야한다.
+<div id="computer" :style="{ background: `url(https://en.pimg.jp/023/182/267/1/23182267.jpg) ${imageCode} 0`}"></div>
+`${abc}` 이건 자바스크립트 문법이다.
+
+근데 이전강의에서 복잡한 연산은 computed로 만들라 했다. 
+:style=""안에 엄청 길고 계속 바뀌는 것이 있기때문에 
+캐싱효과를 받을 수 있게 computed로 바꿔라
+<div id="computer" :style="computedStyleObject"></div>
+
+기억해라
+단순한것은 그냥 쓰면되지만
+거추장스러운것들이 붙어있으면 computed를 사용하자.
+
+
+
+		22강
+라이프사이클
+화면에 렌더링되자마자 사진이 바위-가위-보로 이동하길 원한다.
+이게 바로 라이프사이클에 대한 내용이다.
+created, mounted, updated, destoryed 이 4개만 외우자.
+
+<lifecycle-example v-if="true"/> 이걸 예시로 봐보자.
+created : if가 false이다가 true로 되는 순간 생성되면서 created()가 실행된다. 
+	막 데이터에대한 계산을 시작한다.  {{result}} 이런거에 값을 다 일일이 넣는 작업을 한다.
+	즉 보여지지만 화면에 나타나기 전
+mounted: 이제 created()가 실행된 후
+	이제 다 넣어지고 완성본이 나오고(created), 화면을 그리기 시작할때 mounted()가 실행된다.
+	화면에 나타난 후
+화면에 대한 작업을 할때는 mounted를 해야한다! craeted에서 하면 안된다.
+updated: 화면에 보여지고 컴포넌트 내부에 메소드나 데이터를 통해 
+	또 화면이 바뀌는 경우 updated()가 실행된다.
+destoryed: true가 다시 false가 되는 순간 없어지면서 destoryed()가 실행된다.
+
+이렇게 4개 알아두면 좋다.
+특히 created와 mounted를 잘 구분해두면 좋다.
+
+data() {return ...},
+methods: {....},
+created() {...},
+mounted() { ... },
+
+만약 
+mounted에서 setInterval로 반복작업을 하고있다면
+컴포넌트가 사라지는 경우도 대비해서
+destoryed나 beforeDestoyed에 clearInterval(interval); 을 해주어야 한다.
+그래야 메모리 누수가 발생하지 않는다.
+
+
+
+		24강
+ v-for에 v-bind:key=""를 넣는 이유
+<li v-for="~~">...</>
+이러면 li가 여러개 생길텐데 그 li에 대한 
+v-bind:key(= :key)고유한 이름 을 붙이는 것이다.
+그래서 그 고유한 이름을 가지고 화면을 렌더링할 때 구분한다
+
+LottoGenerator컴포넌트에서 
+LottoBall컴포넌트를 부르고 싶다면
+<script>
+import LottoBall from './LottoBall';
+export defalut {
+components: { 'lotto-ball' : LottoBall },
+...
+}
+</script>
+이렇게 컴포넌트를 등록해놔야한다.
+{'lotto-ball' : LottoBall}를 그냥 { LottoBall } 이렇게 바꿔도 lotto-ball 이렇게 사용할 수 있다.
+다른 이름으로 사용하고 싶다면 {'abcde': LottoBall} 이렇게 명시하자.
+하지만 실무에서도 이름을 다르게 하는 경우는 거의 없다.
+
+<div><lotto-ball number="5"></></>
+이런식으로 LottoGenerator에서 부르면 부모자식관계가 형성된다.
+LottoGenerator컴포넌트에서 number="5"이렇게 넣어주면
+LottoBall컴포넌트에서 props: { number: Number }이렇게 props를 명시하여
+number를 Number 형식으로 받을 수 있다.
+
+주의할점은
+props는 변경이 불가능하다.
+props: { number: Number }에서 
+method: { changeNumber() {this.number = 1000; }}
+이렇게 number를 바꾸려한다면 오류가 난다.
+props는 read-only이다.
+
+이렇게 부모에서 자식에게 값을 물려주는 것을 props라고 한다.
+만약 정 number의 값을 바꾸고 싶다면 부모에서 바꿔서 props로 보내라. 
+자식에서 지랄하지마라. 데이터 불일치가 발생한다.
+
+props도 v-bind가 가능하다
+<...v-for="ball in winBalls" :key="ball" v-bind:number="ball"...>
+
+항상 생각할 부분은 setTimeout을 했으면
+destoryed에서 clearTimeout을 해줘야한다.
+
+ watch
+어떤 값이 바뀌였는지 안바뀌였는지 감시하는(지켜보는) 기능
+
+watch: {
+ winBalls(val, oldVal) {...}
+}
+만약 winBalls라는 배열 변수를 감시하고 싶다면 위와 같이 watch에 구현하라.
+
+winBalls(val, oldVal) {
+	if(val.length === 0) { this.showBalls(); }
+}
+winBalls가 바뀔때마다 이 함수가 실행이 되는데
+winBalls의 배열의 길이가 0 즉 아무 값도 없다면 
+showBalls라는 함수를 실행하고 싶다면 위와 같이 작성한다.
+
+ watch 주의사항
+redo라는 boolean변수가 있다면
+watch: {
+	redo(val, oldVal) {
+		if(val === false)  this.redo = true;
+		else this.redo = false;
+	}
+}
+이러면 무한루프가 일어난다. 이렇게 만들지 말자.
+watch를 남용하면 프로그램이 망가질 수 있음.
+또한 watch는 비동기적으로 작동하기 때문에 예측하기 어려워진다.
+
+결과적으로 watch는 최대한 자제하는게 좋다.
+watch로 하는 것은 왠만한 것은 전부 직접 구현할 수 있다.
+watch는 최후의 수단이다. 진짜 이거아니면 못하겠다면 쓰자.
+
+
+
+
+
+
+
+
