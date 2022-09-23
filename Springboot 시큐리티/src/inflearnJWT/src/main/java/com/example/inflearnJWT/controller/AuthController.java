@@ -30,7 +30,8 @@ public class AuthController {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
     }
 
-    //로그인 API
+    // 로그인 API
+    // 메타코딩 시큐리티-jwt 부분에서 JwtAuthorizationFilter와 비슷한 역할인 것 같다. 
     @PostMapping("/authenticate")
     public ResponseEntity<TokenDto> authorize(@Valid @RequestBody LoginDto loginDto) {
 
