@@ -10,6 +10,8 @@
 
 entity -> `TokenProvider` -> `JwtFilter` -> `JwtSecurityConfig` -> `JwtAuthenticationEntryPoint` -> `SecurityConfig` -> dto -> repository -> `CustomUserDetailsService` -> `AuthController`
 
+`SecurityUtil` -> `UserService` -> 
+
 <br>
 <br>
 
@@ -111,5 +113,51 @@ JDK 10이하의 환경에서 RSASSA-PSS(PS256, PS384, PS512) 알고리즘을 사
 JPA에 `create_drop`설정을 `update`로 변경
 
 https://galid1.tistory.com/610
+
+<br>
+<br>
+
+## Postman에서 토큰 저장
+`http://localhost:8080/api/authenticate`의 주소에서 토큰을 받는데 이걸 받아서 복붙으로 테스트를 하는 것은 매우 귀찮다. 다음과 같이 설정하면 편하게 토큰을 사용할 수 있다.
+
+Tests 탭에 들어가서 다음 코드를 붙혀넣고 `{{}}`를 이용해서 값을 사용할 수 있다.
+```js
+var jsonData = JSON.parse(responseBody)
+pm.globals.set("jwt_tutorial_token", jsonData.token);
+```
+
+`{{jwt_tutorial_token}}`이렇게 값으로 넣어서 사용하면 된다는데 작동을 하지 않는다. 추가적인 설정이 필요한 것 같다.
+
+<br>
+<br>
+
+## `SecurityContextHolder`, `SecurityContext` ...
+
+`SecurityContextHolder` - 누가 인증했는지에 대한 정보들을 저장하고 있습니다.
+
+`SecurityContext` - 현재 인증한 user에 대한 정보를 가지고 있습니다.
+
+`Authentication` - `SecurityContext`의 user, 인증 정보를 가지고 있으며, `AuthenticationManager`에 의해 제공됩니다.
+
+`GrantedAuthority` - 인증 주체에게 부여된 권한 (roles, scopes, etc.)
+
+`AuthenticationManager` - Spring Security의 필터에서 인증을 수행하는 방법을 정의하는 API입니다.
+
+<br>
+
+`SecurityContextHolder`는 시큐리티가 인증한 내용들을 가지고 있으며, **`SecurityContext`를 포함**하고 있고 `SecurityContext`를 현재 스레드와 연결해 주는 역할을 합니다.
+
+```java
+SecurityContextHolder.getContext(); // SecurityContext 반환
+```
+
+`SecurityContextHolder`은 `ThreadLocal`을 이용하여 인증 관련된 정보(principal, credentials, authenticated)를 저장합니다.
+
+`ThreadLocal`에 정보를 저장하여 관리하기 때문에 동일 스레드에서는 항상 같은 인증 정보로 접근 가능합니다.
+
+https://00hongjun.github.io/spring-security/securitycontextholder/
+
+<br>
+<br>
 
 
