@@ -1,6 +1,6 @@
 package com.example.inflearnJWT.jwt;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.*; 
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
@@ -29,6 +29,7 @@ public class TokenProvider implements InitializingBean {
 	   private final String secret;
 	   private final long tokenValidityInMilliseconds;
 	   private Key key;
+	   
 
 	   public TokenProvider(
 	      @Value("${jwt.secret}") String secret,
