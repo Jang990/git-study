@@ -59,3 +59,13 @@
     *  `updated`
     *  `destoryed`
   * 5-4
+* [6강](6.md)
+  * 6-1
+     * `v-for`에 `v-bind:key=""`를 넣는 이유
+  * 6-2
+     * 기존 컴포넌트에 다른 컴포넌트 등록 방법
+     * `props` 상세 설명
+  * 6-3
+    *  `props`에 `v-bind` 사용
+  * 6-4
+    *  `watch`
