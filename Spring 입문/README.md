@@ -4,7 +4,7 @@
 
 각각의 장에 대한 내용을 .md파일로 정리해놓음
 
-스프링 부트의 이해를 위해 진행하는 공부이기 때문에 스프링 설정 부분이나 JSP 관련 부분들은 스킵한다.
+스프링 부트를 사용하기 위해 진행하는 공부이기 때문에 스프링의 설정 부분은 나중에 공부하고, JSP 관련 부분들은 스킵한다.
 
 <br>
 <br>
@@ -41,7 +41,7 @@
     * `InitializingBean`,`DisposableBean`
     * `@Bean` 속성: `initMethod`, `destroyMethod`
     * `@Scope`
-7. [**~~chapter07 AOP 프로그래밍~~**](chapter07_AOP_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D.md)<br>
+7. [**chapter07 AOP 프로그래밍**](https://velog.io/@sdsd0908/Spring-AOP)<br>
 8. [**chapter08 DB 연동**](chapter08_DB_%EC%97%B0%EB%8F%99.md)<br>
     * 커넥션 풀
     * `DataSource` 설정
